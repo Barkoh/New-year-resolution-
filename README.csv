@@ -1,0 +1,48 @@
+--- New-year-resolution-on twitter 
+---number of resolution by tweet category 
+  SELECT tweet_category, 
+  COUNT(tweet_text) AS numberOfResolutions
+  FROM
+  `Twitter_newyear_resolution_Project.resolutions`
+  GROUP BY
+   1
+---total retweet per category 
+SELECT 
+    tweet_category, 
+  SUM(retweet_count)AS totalRetweet
+  FROM 
+  `Twitter_newyear_resolution_Project.resolutions`
+  GROUP BY
+  tweet_category
+  ---Highest  tweet posted by day and  the time with the highest post
+  WITH  
+   base AS (
+    SELECT
+     DATE(tweet_created) AS tweetDate,
+     Time(tweet_created) AS  tweetTime,
+    ---Time_Trunk(TIME(tweet_created),Hour) AS tweethour,
+    ---EXTRACT (HOUR FROM tweet_created),
+    CASE
+       WHEN EXTRACT (MINUTE FROM tweet_created) > 30 THEN EXTRACT(HOUR FROM tweet_created) + 1
+       ELSE EXTRACT(HOUR FROM tweet_created )
+      END AS hour,
+      tweet_text
+
+     FROM 
+        `Twitter_newyear_resolution_Project.resolutions`
+     )
+   SELECT
+     hour,
+     COUNT(tweet_text) AS numberofTweet
+     FROM
+      base
+    GROUP BY
+    1
+  ---number of retweet 
+  SELECT
+  tweet_state,
+  COUNT(tweet_text) AS numberOfTweet
+  FROM
+     `Twitter_newyear_resolution_Project.resolutions`
+     GROUP BY
+       1
